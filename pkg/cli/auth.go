@@ -55,9 +55,12 @@ func init() {
 
 func Auth(k8s bool) {
 
-	var GetAuthTokenResponse sunsynk.SSApiTokenResponse
+	var GetNewAuthTokenResponse sunsynk.SSApiNewTokenResponse
 
-	namespace := "sunsynk"
+	namespace := os.Getenv("SS_NAMESPACE")
+	if namespace == "" {
+		namespace = "sunsynk"
+	}
 
 	if !k8s {
 
@@ -68,12 +71,12 @@ func Auth(k8s bool) {
 			log.Fatal("No credentials found in env")
 		}
 
-		GetAuthTokenResponse, err := sunsynk.GetAuthToken(string(SunsynkUser), string(SunsynkPass))
+		GetNewAuthTokenResponse, err := sunsynk.GetNewAuthToken(string(SunsynkUser), string(SunsynkPass))
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		TokenJson, err := json.Marshal(GetAuthTokenResponse)
+		TokenJson, err := json.Marshal(GetNewAuthTokenResponse)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -105,7 +108,7 @@ func Auth(k8s bool) {
 			log.Fatal("password not found in secret data")
 		}
 
-		GetAuthTokenResponse, err = sunsynk.GetAuthToken(string(username), string(password))
+		GetNewAuthTokenResponse, err = sunsynk.GetNewAuthToken(string(username), string(password))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -118,11 +121,11 @@ func Auth(k8s bool) {
 			},
 			Type: "Opaque",
 			Data: map[string][]byte{
-				"token":     []byte(GetAuthTokenResponse.Data.AccessToken),
-				"type":      []byte(GetAuthTokenResponse.Data.TokenType),
-				"refresh":   []byte(GetAuthTokenResponse.Data.RefreshToken),
-				"expiry":    []byte(fmt.Sprint(GetAuthTokenResponse.Data.TokenExpiry)),
-				"scope":     []byte(GetAuthTokenResponse.Data.Scope),
+				"token":     []byte(GetNewAuthTokenResponse.Data.AccessToken),
+				"type":      []byte(GetNewAuthTokenResponse.Data.TokenType),
+				"refresh":   []byte(GetNewAuthTokenResponse.Data.RefreshToken),
+				"expiry":    []byte(fmt.Sprint(GetNewAuthTokenResponse.Data.TokenExpiry)),
+				"scope":     []byte(GetNewAuthTokenResponse.Data.Scope),
 				"timestamp": []byte(fmt.Sprint(time.Now().Unix())),
 			},
 		}
@@ -138,11 +141,11 @@ func Auth(k8s bool) {
 			log.Printf("Created secret %q.\n", result.GetObjectMeta().GetName())
 		} else {
 			// Update the secret
-			result.Data["token"] = []byte(GetAuthTokenResponse.Data.AccessToken)
-			result.Data["type"] = []byte(GetAuthTokenResponse.Data.TokenType)
-			result.Data["refresh"] = []byte(GetAuthTokenResponse.Data.RefreshToken)
-			result.Data["expiry"] = []byte(fmt.Sprint(GetAuthTokenResponse.Data.TokenExpiry))
-			result.Data["scope"] = []byte(GetAuthTokenResponse.Data.Scope)
+			result.Data["token"] = []byte(GetNewAuthTokenResponse.Data.AccessToken)
+			result.Data["type"] = []byte(GetNewAuthTokenResponse.Data.TokenType)
+			result.Data["refresh"] = []byte(GetNewAuthTokenResponse.Data.RefreshToken)
+			result.Data["expiry"] = []byte(fmt.Sprint(GetNewAuthTokenResponse.Data.TokenExpiry))
+			result.Data["scope"] = []byte(GetNewAuthTokenResponse.Data.Scope)
 			result.Data["timestamp"] = []byte(fmt.Sprint(time.Now().Unix()))
 
 			_, err = clientset.CoreV1().Secrets(namespace).Update(context.Background(), result, metav1.UpdateOptions{})

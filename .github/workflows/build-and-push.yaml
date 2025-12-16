@@ -34,4 +34,4 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64
           push: true
-          tags: sordfish/ssctl:latest,sordfish/ssctl:0.2.0
+          tags: sordfish/ssctl:latest,sordfish/ssctl:1.0.0

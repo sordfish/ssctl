@@ -6,13 +6,16 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"time"
 )
 
-var (
-	// SSApiTokenEndpoint = "http://192.168.1.93:1080/oauth/token"
-	SSApiTokenEndpoint = "https://api.sunsynk.net/oauth/token"
-)
+var SSApiTokenEndpoint = func() string {
+	if v := os.Getenv("SS_API_ENDPOINT"); v != "" {
+		return v + "/oauth/token/new"
+	}
+	return "https://api.sunsynk.net/oauth/token/new"
+}()
 
 type SSApiTokenResponse struct {
 	Code    int    `json:"code"`
