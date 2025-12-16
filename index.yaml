@@ -2,6 +2,16 @@ apiVersion: v1
 entries:
   ssctl:
   - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2025-12-16T23:19:23.207657392Z"
+    description: A Helm chart for ssctl
+    digest: a499eba6039e4733cf5a0a37768cd062ca8aa4d8c06a1bd703ca30f722527df4
+    name: ssctl
+    type: application
+    urls:
+    - https://github.com/sordfish/ssctl/releases/download/ssctl-0.2.1/ssctl-0.2.1.tgz
+    version: 0.2.1
+  - apiVersion: v2
     appVersion: 0.2.0
     created: "2023-12-04T20:55:36.900694114Z"
     description: A Helm chart for ssctl
@@ -111,4 +121,4 @@ entries:
     urls:
     - https://github.com/sordfish/ssctl/releases/download/ssctl-0.1.2/ssctl-0.1.2.tgz
     version: 0.1.2
-generated: "2023-12-04T20:55:36.900741112Z"
+generated: "2025-12-16T23:19:23.20771007Z"
